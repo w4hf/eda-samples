@@ -6,6 +6,7 @@
       servicenow.itsm.records:
         table: sc_request
         interval: 5
+        remote_servicenow_timezone: UTC
 
   rules:
 
