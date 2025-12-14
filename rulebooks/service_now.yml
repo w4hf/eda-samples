@@ -7,7 +7,7 @@
         table: sc_request
         interval: 5
         # timezone: UTC
-        remote_servicenow_timezone: UTC
+        remote_servicenow_timezone: Europe/Paris
 
   rules:
 
