@@ -1,0 +1,54 @@
+name: Sync EDA Project
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  sync:
+    environment: test
+    runs-on: self-hosted
+    steps:
+      - name: Stop Rulebook Activation
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+          ACTIVATION_ID: ${{ vars.EDA_ACTIVATION_ID }}
+        run: |
+          curl -k -sS -X POST "https://aap26.home/api/eda/v1/activations/${ACTIVATION_ID}/disable/" \
+            -H "Authorization: Token $API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --fail
+
+      - name: Wait for rulebook activation stop
+        run: |
+          sleep 15
+
+      - name: Trigger Project Sync
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+          PROJECT_ID: ${{ vars.EDA_PROJECT_ID }}
+        run: |
+          curl -k -sS -X POST "https://aap26.home/api/eda/v1/projects/${PROJECT_ID}/sync/" \
+            -H "Authorization: Token $API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --fail
+            
+      - name: Wait for Project sync
+        run: |
+          sleep 15
+
+      - name: Start Rulebook Activation
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+          ACTIVATION_ID: ${{ vars.EDA_ACTIVATION_ID }}
+        run: |
+          curl -k -sS -X POST "https://aap26.home/api/eda/v1/activations/${ACTIVATION_ID}/enable/" \
+            -H "Authorization: Token $API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --fail
+
+      - name: Wait for rulebook activation start
+        run: |
+          sleep 30
