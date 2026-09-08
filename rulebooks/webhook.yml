@@ -14,3 +14,8 @@
       condition: true
       action:
         debug:
+
+    - name: Another Rule
+      condition: true
+      action:
+        debug:
